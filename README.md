@@ -1,133 +1,191 @@
-# Proyecto Marketplace - Faraón
+# Proyecto Marketplace - Tienda Don Pepito
 
-Un marketplace moderno y sostenible desarrollado con Spring Boot (backend) y React (frontend), diseñado para conectar proveedores y consumidores de productos ecoamigables.
+Un marketplace moderno y optimizado desarrollado con **Spring Boot** (backend) y **React** (frontend), diseñado para la compra, venta y gestión integral de productos con múltiples roles de usuario (Cliente, Proveedor y Administrador).
+
+---
 
 ## 📋 Descripción del Proyecto
 
-Este proyecto es un marketplace completo que permite a los usuarios explorar, comprar y vender productos sostenibles. El sistema incluye autenticación de usuarios, gestión de productos, categorías, pedidos y un panel administrativo.
+Este proyecto es una plataforma de comercio electrónico completa que conecta a clientes con proveedores. Incluye autenticación mediante JWT, catálogo interactivo con filtros, sistema de carrito de compras, checkout con generación de boletas en PDF, gestión de favoritos, módulo de proveedores con control de stock y un panel de administración con reportes y analítica de ventas.
 
 ### Características Principales
 
 - **Frontend (React + Vite + Tailwind CSS)**
-  - Interfaz moderna y responsiva
-  - Sistema de autenticación con JWT
-  - Catálogo de productos con filtros avanzados y paginación
-  - Integración con API de categorías y subcategorías
-  - Carrito de compras
-  - Páginas de perfil de usuario
-  - Diseño adaptativo para móviles y desktop
+  - Interfaz moderna, modular y totalmente responsiva.
+  - Autenticación y registro con modales dinámicos y validación de formularios.
+  - Catálogo interactivo con barra de búsqueda (`SearchBar`), filtrado por categorías/subcategorías y ordenamiento.
+  - Carrito de compras global reactivo mediante Context API (`CartContext`).
+  - Proceso de checkout con emisión y descarga de comprobantes en PDF (`boletaPdfService`).
+  - Módulo de usuario: perfil, historial de compras (`Mispedidos`), favoritos (`MisFavoritos`) y detalle de pedidos.
+  - Módulo de proveedor: publicación y edición de productos, solicitud de stock, gestión de inventario y panel de ventas (`MisVentas`, `reportesP`).
+  - Panel administrativo para control de usuarios, auditoría de proveedores y gestión global.
+  - Rutas protegidas basadas en roles (`ProtectedRoute`).
 
-- **Backend (Spring Boot + MySQL)**
-  - API RESTful
-  - Autenticación y autorización con JWT (roles: USUARIO, PROVEEDOR, ADMINISTRADOR)
-  - Gestión de usuarios, productos, pedidos, categorías y subcategorías
-  - Base de datos MySQL
-  - Validación de datos
-  - Manejo de errores global
-  - Endpoints públicos para categorías y subcategorías
+- **Backend (Spring Boot + MySQL + Spring Security)**
+  - Arquitectura en capas limpia y desacoplada (Controller, Service, Repository, DTO, Domain).
+  - API RESTful con endpoints protegidos y públicos.
+  - Seguridad y control de acceso basado en roles con JWT y `JwtAuthenticationFilter`.
+  - Hashing seguro de contraseñas con `BCryptPasswordEncoder`.
+  - Gestión integral de entidades: Usuarios, Productos, Proveedores, Pedidos, Ventas, Stock, Reseñas y Favoritos.
+  - Manejo global centralizado de excepciones (`GlobalExceptionHandler`).
+  - Validación de datos mediante DTOs específicos para cada operación.
+
+---
 
 ## 🛠️ Tecnologías Utilizadas
 
 ### Frontend
-- **React 19.2.0** - Framework principal
-- **Vite** - Build tool y dev server
-- **React Router DOM** - Navegación
-- **Tailwind CSS 4.1.17** - Estilos
-- **Lucide React** - Iconos
-- **React Hot Toast** - Notificaciones
+- **React 19 / 18** - Biblioteca principal de interfaz de usuario
+- **Vite** - Empaquetador y entorno de desarrollo ultra rápido
+- **React Router DOM** - Enrutamiento dinámico y protección de rutas
+- **Tailwind CSS** - Framework de utilidades CSS para diseño responsivo
+- **Context API & Hooks** - Gestión global del estado del carrito y autenticación
+- **jsPDF / Servicios PDF** - Generación y descarga de boletas electrónicas
 
 ### Backend
-- **Spring Boot 3.5.7** - Framework principal
-- **Java 21** - Lenguaje de programación
-- **Spring Data JPA** - Persistencia de datos
-- **MySQL** - Base de datos
-- **Spring Security** - Autenticación y autorización
-- **JWT** - Tokens de autenticación
-- **Lombok** - Reducción de código boilerplate
+- **Spring Boot 3.x** - Framework backend principal
+- **Java 17 / 21** - Lenguaje de programación
+- **Spring Data JPA / Hibernate** - Mapeo objeto-relacional y persistencia
+- **Spring Security** - Seguridad, autenticación y autorización
+- **JWT (JSON Web Tokens)** - Autenticación basada en tokens sin estado
+- **MySQL** - Motor de base de datos relacional
+- **Lombok** - Optimización y reducción de código boilerplate
+- **Maven** - Gestor de dependencias y construcción del proyecto
+
+---
 
 ## 📁 Estructura del Proyecto
 
 ```
-Proyecto_Marketplace/
-├── backend/                          # API REST con Spring Boot
+Tienda_Don_Pepito_Optimizado/
+├── backend/                                   # API REST con Spring Boot
 │   ├── src/main/java/com/marketplace/backend/
-│   │   ├── BackendApplication.java   # Clase principal
-│   │   ├── config/                   # Configuraciones
+│   │   ├── BackendApplication.java            # Clase principal
+│   │   ├── config/                            # Configuraciones de seguridad y BD
 │   │   │   ├── DatabaseConnectionTest.java
-│   │   │   ├── SecurityConfig.java
-│   │   ├── controller/               # Controladores REST
+│   │   │   ├── FavoritosTableInitializer.java
+│   │   │   └── SecurityConfig.java
+│   │   ├── controller/                        # Controladores REST
+│   │   │   ├── AdminUsuarioController.java
 │   │   │   ├── AuthController.java
+│   │   │   ├── CarritoController.java
+│   │   │   ├── CategoriaController.java
+│   │   │   ├── FavoritoController.java
+│   │   │   ├── PedidoController.java
+│   │   │   ├── ProductoController.java
+│   │   │   ├── ProveedorController.java
+│   │   │   ├── ResenaController.java
+│   │   │   ├── SolicitudStockController.java
 │   │   │   ├── UsuarioController.java
-│   │   ├── dominio/                  # Entidades JPA
-│   │   │   ├── Usuario.java
-│   │   │   ├── Producto.java
-│   │   │   ├── Categoria.java
-│   │   │   ├── Subcategoria.java
-│   │   │   ├── Pedido.java
-│   │   │   ├── DetallePedido.java
+│   │   │   └── VentaController.java
+│   │   ├── dominio/                           # Entidades JPA (Modelos)
 │   │   │   ├── Carrito.java
+│   │   │   ├── Categoria.java
+│   │   │   ├── DetallePedido.java
+│   │   │   ├── Favorito.java
 │   │   │   ├── ImagenProducto.java
+│   │   │   ├── Pedido.java
+│   │   │   ├── Producto.java
 │   │   │   ├── Proveedor.java
-│   │   │   └── Resena.java
-│   │   ├── dto/                      # Data Transfer Objects
+│   │   │   ├── Resena.java
+│   │   │   ├── SolicitudStock.java
+│   │   │   ├── Subcategoria.java
+│   │   │   └── Usuario.java
+│   │   ├── dto/                               # Data Transfer Objects (Requests & Responses)
+│   │   │   ├── ActualizarPerfilDTO.java
+│   │   │   ├── ActualizarProductoDTO.java
+│   │   │   ├── AgregarCarritoDTO.java
+│   │   │   ├── CarritoItemDTO.java
+│   │   │   ├── CrearPedidoDTO.java
+│   │   │   ├── CrearProductoDTO.java
 │   │   │   ├── LoginDTO.java
 │   │   │   ├── LoginResponseDTO.java
 │   │   │   ├── RegistroUsuarioDTO.java
-│   │   │   └── UsuarioResponseDTO.java
-│   │   ├── exception/                # Manejo de excepciones
+│   │   │   ├── SolicitudStockDTO.java
+│   │   │   └── ...
+│   │   ├── exception/                         # Control de errores y excepciones
 │   │   │   └── GlobalExceptionHandler.java
-│   │   ├── repository/               # Repositorios JPA
-│   │   │   └── UsuarioRepository.java
-│   │   ├── security/                 # Configuración de seguridad
+│   │   ├── repository/                        # Interfaces Spring Data JPA
+│   │   │   ├── CarritoRepository.java
+│   │   │   ├── CategoriaRepository.java
+│   │   │   ├── PedidoRepository.java
+│   │   │   ├── ProductoRepository.java
+│   │   │   ├── ProveedorRepository.java
+│   │   │   ├── UsuarioRepository.java
+│   │   │   └── ...
+│   │   ├── security/                          # Utilidades y filtros JWT
+│   │   │   ├── JwtAuthenticationFilter.java
 │   │   │   └── JwtUtil.java
-│   │   └── service/                  # Lógica de negocio
-│   │       └── UsuarioService.java
+│   │   └── service/                           # Lógica de negocio
+│   │       ├── CarritoService.java
+│   │       ├── PedidoService.java
+│   │       ├── ProductoService.java
+│   │       ├── ProveedorService.java
+│   │       ├── UsuarioService.java
+│   │       ├── VentaService.java
+│   │       └── ...
 │   └── src/main/resources/
-│       └── application.properties    # Configuración de la aplicación
-├── frontend/                         # Aplicación React
+│       └── application.properties             # Parámetros de configuración y BD
+├── frontend/                                  # SPA desarrollada con React + Vite
 │   ├── src/
-│   │   ├── components/               # Componentes reutilizables
-│   │   │   ├── Navbar.jsx            # Barra de navegación
-│   │   │   ├── Footer.jsx            # Pie de página
-│   │   │   ├── Hero.jsx              # Sección hero
-│   │   │   ├── LoginModal.jsx        # Modal de login
-│   │   │   ├── RegistroModal.jsx     # Modal de registro
-│   │   │   └── Modal.jsx             # Componente modal base
-│   │   ├── pages/                    # Páginas de la aplicación
-│   │   │   ├── Home.jsx              # Página principal
-│   │   │   ├── Catalogo.jsx          # Catálogo de productos
-│   │   │   ├── Miperfil.jsx          # Perfil de usuario (404)
-│   │   │   ├── Administrativa.jsx    # Panel administrativo (404)
-│   │   │   ├── Carrito.jsx           # Carrito de compras (404)
-│   │   │   ├── Contacto.jsx          # Página de contacto (404)
-│   │   │   ├── Mispedidos.jsx        # Mis pedidos (404)
-│   │   │   └── vista_producto.jsx    # Vista de producto (404)
-│   │   ├── services/                 # Servicios para API
-│   │   │   ├── authService.js        # Servicio de autenticación
-│   │   │   └── usuarioService.js     # Servicio de usuarios
-│   │   ├── config/                   # Configuraciones
-│   │   │   └── api.js                # Configuración de API
-│   │   ├── App.jsx                   # Componente principal
-│   │   └── main.jsx                  # Punto de entrada
-│   ├── package.json                  # Dependencias del frontend
-│   └── vite.config.js                # Configuración de Vite
-└── README.md                         # Este archivo
+│   │   ├── components/                        # Componentes UI reutilizables
+│   │   │   ├── Navbar.jsx
+│   │   │   ├── footer.jsx
+│   │   │   ├── SearchBar.jsx
+│   │   │   ├── LoginModal.jsx
+│   │   │   ├── RegistroModal.jsx
+│   │   │   └── ProtectedRoute.jsx
+│   │   ├── context/                           # Contextos globales
+│   │   │   └── CartContext.jsx
+│   │   ├── pages/                             # Vistas de la aplicación
+│   │   │   ├── Home.jsx
+│   │   │   ├── Catalogo.jsx
+│   │   │   ├── vista_producto.jsx
+│   │   │   ├── Carrito.jsx
+│   │   │   ├── Checkout.jsx
+│   │   │   ├── Miperfil.jsx
+│   │   │   ├── MisFavoritos.jsx
+│   │   │   ├── Mispedidos.jsx
+│   │   │   ├── DetallePedido.jsx
+│   │   │   ├── Misproductos.jsx
+│   │   │   ├── CrearProducto.jsx
+│   │   │   ├── EditarProducto.jsx
+│   │   │   ├── MisVentas.jsx
+│   │   │   ├── reportesP.jsx
+│   │   │   ├── SolicitarProveedor.jsx
+│   │   │   ├── Contacto.jsx
+│   │   │   └── Administrativa.jsx
+│   │   ├── services/                          # Cliente HTTP y llamadas a la API
+│   │   │   ├── authService.js
+│   │   │   ├── productoService.js
+│   │   │   ├── cartService.js
+│   │   │   ├── pedidoService.js
+│   │   │   ├── boletaPdfService.js
+│   │   │   └── ...
+│   │   ├── utils/                             # Validaciones y utilitarios
+│   │   │   ├── formValidation.js
+│   │   │   └── imageUtils.js
+│   │   ├── App.jsx                            # Definición de rutas principales
+│   │   └── main.jsx                           # Punto de entrada frontend
+│   ├── package.json
+│   └── vite.config.js
+└── README.md
 ```
 
 ## 🚀 Instalación y Configuración
 
 ### Prerrequisitos
 
-- **Java 21** o superior
-- **Node.js 18+** y **npm**
-- **MySQL 8.0+**
-- **Maven 3.6+**
+- **Java 17 / 21** instalado
+- **Node.js 18+** y gestor de paquetes **npm**
+- **MySQL 8.0+** en ejecución
+- **Maven 3.8+** (o usar el wrapper `./mvnw`)
 
 ### 1. Clonar el Repositorio
 
 ```bash
 git clone <url-del-repositorio>
-cd Proyecto_Marketplace
+cd Tienda_Don_Pepito_Optimizado
 ```
 
 ### 2. Configurar la Base de Datos
@@ -196,119 +254,68 @@ El frontend estará disponible en `http://localhost:5173`
 ### Frontend
 
 ```bash
-npm run dev      # Inicia el servidor de desarrollo
-npm run build    # Construye la aplicación para producción
-npm run preview  # Vista previa de la build de producción
-npm run lint     # Ejecuta el linter
+npm run dev       # Inicia el servidor de desarrollo local con Hot Reload
+npm run build     # Compila y optimiza la aplicación para producción en /dist
+npm run preview   # Previsualiza la compilación de producción localmente
+npm run lint      # Ejecuta el análisis estático de código con ESLint
 ```
 
 ### Backend
 
 ```bash
-mvn clean install          # Instala dependencias
-mvn spring-boot:run        # Ejecuta la aplicación
-mvn test                   # Ejecuta los tests
+mvn clean install   # Descarga dependencias y compila los paquetes
+mvn spring-boot:run # Inicia el backend de Spring Boot
+mvn test            # Ejecuta las pruebas unitarias y de integración
 ```
 
-## 🌐 Uso de la Aplicación
+## 🌐 Módulos y Uso de la Aplicación
 
-### Páginas Disponibles
+### Vistas Públicas y de Clientes
 
-- **/** - Página principal con productos destacados
-- **/catalogo** - Catálogo completo con filtros y paginación
+- **/** - Página de inicio con productos destacados y banners informativos.
+- **/catalogo** - Exploración general con filtros dinámicos por categorías, precios y búsqueda en tiempo real.
+- **/vista_producto** - Información detallada del producto, stock disponible y valoraciones.
+- **/Carrito** - Gestión de productos añadidos, actualización de cantidades y cálculo de importes.
+- **/Checkout** - Proceso de compra con confirmación y emisión de boleta en PDF.
+- **/Miperfil** - Gestión de datos personales y actualización de contraseña.
+- **/MisFavoritos** - Listado personalizado de artículos guardados.
+- **/Mispedidos** & **/DetallePedido** - Seguimiento del estado de compras e historial.
 
-### Páginas en Desarrollo (404)
+### Vistas para Proveedores y Administración
 
-Las siguientes páginas muestran un mensaje de "en construcción":
-- **/Miperfil** - Perfil de usuario
-- **/Administrativa** - Panel administrativo
-- **/Carrito** - Carrito de compras
-- **/Contacto** - Página de contacto
-- **/Mispedidos** - Historial de pedidos
-- **/vista_producto** - Vista detallada de producto
+- **/SolicitarProveedor** - Formulario de postulación para ser habilitado como vendedor.
+- **/Misproductos** - Panel del proveedor para auditar su catálogo activo.
+- **/CrearProducto** & **/EditarProducto** - Módulo de alta y actualización de artículos.
+- **/MisVentas** & **/reportesP**: Métricas de rendimiento comercial y control de pedidos despachados.
+- **/Administrativa** - Panel para la gestión de usuarios, roles y moderación de solicitudes.
 
-### Funcionalidades Implementadas
+## 🔐 Autenticación y Endpoints Principales
 
-#### Frontend
-- ✅ Navegación responsive
-- ✅ Sistema de autenticación (login/registro)
-- ✅ Catálogo de productos con filtros avanzados (categorías, subcategorías, precio, popularidad)
-- ✅ Integración con API de categorías y subcategorías desde la base de datos
-- ✅ Paginación (15 productos por página)
-- ✅ Botón de scroll to top
-- ✅ Diseño moderno con Tailwind CSS
-
-#### Backend
-- ✅ API RESTful
-- ✅ Autenticación JWT con roles (USUARIO, PROVEEDOR, ADMINISTRADOR)
-- ✅ Gestión de usuarios, categorías y subcategorías
-- ✅ Endpoints públicos para categorías y subcategorías
-- ✅ Conexión a base de datos MySQL
-- ✅ Validación de datos
-- ✅ Manejo de errores
-- ✅ Configuración de seguridad con Spring Security
-
-## 🔐 Autenticación
-
-El sistema utiliza JWT (JSON Web Tokens) para la autenticación. Los tokens se almacenan en el localStorage del navegador.
+La autenticación utiliza tokens JWT, almacenados en el cliente para autorizar peticiones protegidas.
 
 ### Endpoints de Autenticación
 
-- `POST /api/auth/login` - Iniciar sesión
-- `POST /api/auth/register` - Registrar nuevo usuario
+- `POST /api/auth/login` - Inicio de sesión y entrega de token JWT con rol
+- `POST /api/auth/register` - Registro de nuevos usuarios
 
-### Endpoints Públicos
+### Endpoints Principales del Sistema
 
-- `GET /api/public/categorias` - Obtener todas las categorías
-- `GET /api/public/categorias/subcategorias` - Obtener todas las subcategorías
-- `GET /api/public/categorias/{categoriaId}/subcategorias` - Obtener subcategorías por categoría
+- `GET /api/public/categorias` - Obtención pública de categorías y subcategorías.
+- `GET /api/productos` - Catálogo de productos disponibles.
+- `POST /api/pedidos` - Generación y registro de una nueva orden de compra.
+- `GET /api/favoritos` - Consulta de lista de deseos del usuario logueado.
+- `POST /api/solicitudes-stock` - Gestión de reabastecimiento para proveedores.
 
 ## 📊 Base de Datos
 
 ### Entidades Principales
 
-- **Usuario**: Información de usuarios registrados
-- **Producto**: Catálogo de productos
-- **Categoria/Subcategoria**: Clasificación de productos
-- **Pedido/DetallePedido**: Sistema de pedidos
-- **Carrito**: Carrito de compras
-- **Proveedor**: Información de proveedores
-- **Resena**: Sistema de reseñas
-- **ImagenProducto**: Imágenes de productos
-
-## 🤝 Contribución
-
-1. Para poder realizar cambios en el proyecto realiza:
-2. Crea una rama para tu trabajo (`git checkout -b nombre-de-la-rama`)
-3. Realiza todos los cambios que tienes que hacer
-4. Añade todos los datos editados (`git add .`)
-5. Commit tus cambios (`git commit -m 'descripción corta del cambio'`)
-6. Push a la rama (`git push -u origin nombre-de-la-rama`)
-7. Abre un Pull Request en el repositorio de github
-
-Una vez mergeado el trabajo en el repositorio, realiza lo siguiente
-1. vuelve a la rama main (`git checkout main`) 🛑🛑IMPORTANTE
-2. No se mostraran los cambios de tu rama, para ver los cambios ejecuta (`git pull origin main`) 
-3. Verifica que estas en la rama main (`git status`)
-
-## 📝 Licencia
-
-Este proyecto esta realizado por el grupo 2 de innovación
-
-## 👥 Autor
-
-- Carlos Daniel Pure Tocre
-- Efrain Alfredo Hinostroza Otazu
-- Carlos Daniel Huaman Vega
-- Robert Angel Yali Blanco
-
-## 🙏 Agradecimientos
-
-- Profesor por la guía y enseñanza
-- Comunidad de desarrollo por las herramientas y recursos
-- Equipo de desarrollo por el trabajo colaborativo
-- A la ia por ayudarnos a desarrollar unas que otras funciones, pa que mentir profe nadie programa hoy en dia sin ia
-
----
-
-**Nota**: Este proyecto está en desarrollo activo. Algunas funcionalidades pueden estar incompletas o sujetas a cambios.
+- **Usuario**: Datos de cuenta, rol (USUARIO, PROVEEDOR, ADMINISTRADOR) y perfil.
+- **Producto**: Catálogo general, precio, descripción, stock y estado de revisión.
+- **Categoria / Subcategoria**: Estructura jerárquica para la clasificación de inventario.
+- **Pedido / DetallePedido**: Registro de transacciones comerciales y desglose de items.
+- **Carrito**: Persistencia de productos preseleccionados por usuario.
+- **Proveedor**: Información de negocio, estado y validación comercial.
+- **Favorito**: Artículos guardados en la lista de deseos.
+- **Resena**: Puntuaciones y comentarios de los clientes sobre los productos.
+- **SolicitudStock**: Flujo de solicitud y aprobación de inventario adicional.
